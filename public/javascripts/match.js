@@ -2,8 +2,8 @@
  * Created by Josh on 26/06/2017.
  */
 
-UPDATE_INTERVAL = 1000/1;
-FRAMERATE = 1000/30;
+UPDATE_INTERVAL = 1000/20;
+FRAMERATE = 1000/60;
 
 //Main Game object
 Match = function(matchId, socket) {

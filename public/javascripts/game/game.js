@@ -89,11 +89,35 @@ Player = function(playerId, isThisClient, x, y) {
     this.isThisClient = isThisClient;
     this.x = x;
     this.y = y;
+
+    if (isThisClient) {
+        this._setupInputListeners();
+    }
 };
 
 Player.prototype = {
     id: null,
     isThisClient: false,
     x: null,
-    y: null
+    y: null,
+
+    _setupInputListeners: function() {
+        var keyInput = function(event) {
+            switch (event.code) {
+                case 'KeyW':
+                    this.y--;
+                    break;
+                case 'KeyA':
+                    this.x--;
+                    break;
+                case 'KeyS':
+                    this.y++;
+                    break;
+                case 'KeyD':
+                    this.x++;
+                    break;
+            }
+        };
+        document.addEventListener('keydown', keyInput.bind(this));
+    }
 };
