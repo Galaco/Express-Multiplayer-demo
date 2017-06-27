@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<body>
+    <div class="row">
+        <div class="col-sm-2 matchListContainer">
+            <div class="matchListHeader">
+                Match List
+                <span id="refreshMatchList">O</span>
+            </div>
+            <div id="matchList"></div>
+            <input type="text" id="playerId" placeholder="Enter your player name..."/>
+            <button id="newMatch">Create new match</button>
+        </div>
+        <div class="row col-sm-10 gameWindow" id="gameWindow"></div>
+    </div>
+
+
+    <script type="text/javascript" src="javascripts/vendor/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/socket.io.js"></script>
+    <script type="text/javascript" src="javascripts/game.js"></script>
+    <script type="text/javascript" src="javascripts/client.js"></script>
+</body>
+</html>

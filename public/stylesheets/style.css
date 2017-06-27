@@ -1,0 +1,74 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+/*Useful styles*/
+body > .row {
+  height: 550px;
+  min-width: 1200px;
+  max-width: 1200px;
+  border: 1px solid #DDD;
+}
+
+body > .row > .col-sm-2,
+body > .row > .col-sm-10{
+  padding: 0;
+  margin: 0;
+}
+
+.matchListHeader {
+  background-color: #333;
+  color: #ddd;
+  padding: 8px;
+}
+
+#refreshMatchList {
+  width: 16px;
+  height: 16px;
+  float: right;
+  cursor: pointer;
+}
+
+#matchList {
+  height: 462px;
+  overflow-y: scroll;
+}
+
+#matchList > .no-matches {
+  font-size: 24px;
+  color: #ddd;
+  text-align: center;
+  padding-top: 196px;
+}
+
+#matchList > .match {
+  padding: 8px;
+  cursor: pointer;
+}
+
+#matchList > .match:nth-child(even) {
+  background-color: #dedede;
+}
+
+#matchList > .match:nth-child(odd) {
+  background-color: #efefef;
+}
+
+#playerId {
+  height: 32px;
+  width: 100%;
+}
+
+#newMatch {
+  width: 100%;
+}
+
+#gameWindow {
+  border-left: 1px solid #ddd;
+  height: 100%;
+}
