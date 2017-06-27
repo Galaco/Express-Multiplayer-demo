@@ -41,6 +41,7 @@ io.on('connection', function(client) {
     client.on('requestNewMatch', function(serverName) {
         if (!serverName) serverName = 'No Name';
         var match = new GameMatch.Match(Math.floor((Math.random() * 100000) + 1), serverName);
+        //Set match game
         match.setGame(new Game.Game());
         matches.push(match);
         client.emit('requestNewMatch', {'id': match.id, 'name': match.name});

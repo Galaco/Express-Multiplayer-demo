@@ -2,7 +2,8 @@
  * Created by Josh on 26/06/2017.
  */
 
-UPDATE_INTERVAL = 1000/5;
+UPDATE_INTERVAL = 1000/1;
+FRAMERATE = 1000/30;
 
 //Main Game object
 Match = function(matchId, socket) {
@@ -37,6 +38,7 @@ Match.prototype = {
 
     tick: function() {
         if (this.game) {
+            this.game.render();
             this.game.update();
             this.sendData();
         }

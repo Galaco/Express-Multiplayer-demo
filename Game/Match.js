@@ -22,21 +22,27 @@
         addClient: function(client, playerId) {
             this.clients.push({client: client, id: playerId});
 
+            var ctx = this;
             client.on('sync', function(data) {
-                var gameData = {};
                 //Handle gameplay sync
-                if (this.game) {
-                    this.game.syncData(data);
-                    gameData = this.game.getData();
+                if (ctx.game) {
+                    ctx.game.syncData(data);
+                    gameData = ctx.game.getData();
                 }
 
                 //Sync with clients
                 client.emit('sync', gameData);
                 client.broadcast.to('match_' + this.id).emit('sync', gameData);
-            });
+            }, this);
 
             client.on('leaveMatch', function(playerId){
-                console.log(playerId + ' has left the game');
+                ctx.clients.forEach(function(client, index) {
+                    if (client.id === playerId) {
+                        ctx.clients.splice(index, 1);
+                        ctx.game.disconnectPlayer(playerId);
+                        console.log(playerId + ' has left the game');
+                    }
+                });
             });
         }
     };

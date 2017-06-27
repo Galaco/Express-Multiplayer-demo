@@ -36,7 +36,12 @@ socket.on('requestNewMatch', function() {
 });
 socket.on('matchJoined', function(matchId) {
     match = new Match(matchId, socket);
-    match.setGame(new Game());
+
+    var game = new Game(playerId);
+    var renderer = new Renderer('gameWindow');
+    game.setRenderer(renderer);
+
+    match.setGame(game);
 });
 
 //Interface listeners
@@ -50,7 +55,7 @@ $('#newMatch').on('click', function(e) {
 
 //Make sure to handle disconnecting
 $(window).on('beforeunload', function(){
-    socket.emit('leaveMatch', match.matchId, playerId);
+    socket.emit('leaveMatch', playerId);
 });
 
 $(document).ready(function() {
