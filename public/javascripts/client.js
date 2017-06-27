@@ -5,7 +5,7 @@
 var socket = io.connect('localhost:3000');
 
 var playerId = '';
-var game = '';
+var match = '';
 
 
 //Prep game after window ready
@@ -18,16 +18,13 @@ socket.on('requestMatchList', function(data) {
     if (l > 0) {
         while(l--) {
             var s = data[l];
-            console.log(s);
             var match = '<div class="match" data-match-id="' + s.id + '">Id: ' + s.id + '</div>';
             node.append(match);
             node.find('.match:last-child').click(function(e) {
                 playerId = $('#playerId').val();
                 var matchId = $(e.currentTarget).attr('data-match-id');
                 //Join match if name defined
-                if (playerId.length > 0) {
-                    socket.emit('joinMatch', {matchId: matchId, playerId: playerId});
-                }
+                if (playerId.length > 0) socket.emit('joinMatch', {matchId: matchId, playerId: playerId});
             });
         }
     } else {
@@ -38,7 +35,8 @@ socket.on('requestNewMatch', function() {
     socket.emit('requestMatchList');
 });
 socket.on('matchJoined', function(matchId) {
-    game = new Game(matchId, socket);
+    match = new Match(matchId, socket);
+    match.setGame(new Game());
 });
 
 //Interface listeners
@@ -52,7 +50,7 @@ $('#newMatch').on('click', function(e) {
 
 //Make sure to handle disconnecting
 $(window).on('beforeunload', function(){
-    socket.emit('leaveGame', game.matchId, playerId);
+    socket.emit('leaveMatch', match.matchId, playerId);
 });
 
 $(document).ready(function() {

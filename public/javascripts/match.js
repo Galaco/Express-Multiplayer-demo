@@ -2,14 +2,12 @@
  * Created by Josh on 26/06/2017.
  */
 
-UPDATE_INTERVAL = 1000/60;
+UPDATE_INTERVAL = 1000/5;
 
 //Main Game object
-Game = function(matchId, socket) {
+Match = function(matchId, socket) {
     this.matchId = matchId;
     this.socket = socket;
-
-    this.currentPlayer = null;
 
     var ctx = this;
 
@@ -17,10 +15,6 @@ Game = function(matchId, socket) {
     socket.on('sync', function(gameData) {
         ctx.receiveData(gameData);
     });
-
-
-
-
 
 
     //Set the update loop running
@@ -31,26 +25,33 @@ Game = function(matchId, socket) {
     console.log('Joined a match, id: [%s]', this.matchId);
 };
 
-Game.prototype = {
+Match.prototype = {
     matchId: null,
     socket: null,
 
-    currentPlayer: null,
+    game: null,
 
-    //Game data
-    players: [],
+    setGame: function(game) {
+        this.game = game;
+    },
 
     tick: function() {
-        this.sendData();
+        if (this.game) {
+            this.game.update();
+            this.sendData();
+        }
     },
 
     sendData: function() {
-        var gameData = {};
-
-        this.socket.emit('sync', gameData);
+        if (this.game) {
+            this.socket.emit('sync', this.game.fetchClientData());
+        }
     },
 
     receiveData: function(gameData) {
-
+        //Syncing with server
+        if (this.game) {
+            this.game.syncServerData(gameData);
+        }
     }
 };
