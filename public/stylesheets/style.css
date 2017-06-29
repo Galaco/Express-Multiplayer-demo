@@ -10,8 +10,8 @@ a {
 /*Useful styles*/
 body > .row {
   height: 550px;
-  min-width: 1200px;
-  max-width: 1200px;
+  min-width: 1280px;
+  max-width: 1280px;
   border: 1px solid #DDD;
 }
 

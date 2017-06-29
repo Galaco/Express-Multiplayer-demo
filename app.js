@@ -20,7 +20,7 @@ var io = require('socket.io')(server);
 var matches = [];
 
 var GameMatch = require('./Game/Match.js');
-var Game = require('./Game/Game.js')
+var Game = require('./Game/Game.js');
 
 //Handle main lobby connections.
 //A client isn't considered a true client until they join a match
@@ -32,7 +32,7 @@ io.on('connection', function(client) {
         var data = [],
             l = matches.length;
         while (l--) {
-            data.push({'id': matches[l].id, 'name': matches[l].name});
+            data.push({'id': matches[l].id, 'name': matches[l].name, 'clients': matches[l].clients.length});
         }
         client.emit('requestMatchList', data);
     });

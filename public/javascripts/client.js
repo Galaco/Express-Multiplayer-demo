@@ -5,7 +5,7 @@
 var socket = io.connect('localhost:3000');
 
 var playerId = '';
-var match = '';
+var match = null;
 
 
 //Prep game after window ready
@@ -18,7 +18,7 @@ socket.on('requestMatchList', function(data) {
     if (l > 0) {
         while(l--) {
             var s = data[l];
-            var match = '<div class="match" data-match-id="' + s.id + '">Id: ' + s.id + '</div>';
+            var match = '<div class="match" data-match-id="' + s.id + '"><p>Id: ' + s.id + '</p><p>Players:' + s.clients + '</p></div>';
             node.append(match);
             node.find('.match:last-child').click(function(e) {
                 playerId = $('#playerId').val();
@@ -31,17 +31,26 @@ socket.on('requestMatchList', function(data) {
         node.append('<div class="no-matches">No matches found.</div>');
     }
 });
-socket.on('requestNewMatch', function() {
+socket.on('requestNewMatch', function(match) {
     socket.emit('requestMatchList');
+    playerId = $('#playerId').val();
+    if (playerId.length > 0) socket.emit('joinMatch', {matchId: match.id, playerId: playerId});
 });
 socket.on('matchJoined', function(matchId) {
+    if (match !== null) {
+        socket.emit('leaveMatch', playerId);
+    }
+
+
     match = new Match(matchId, socket);
 
     var game = new Game(playerId);
-    var renderer = new Renderer('gameWindow');
-    game.setRenderer(renderer);
+    game.setRenderer(new Renderer('gameWindow'));
+    game.setPhysicsManager(new PhysicsManager());
 
     match.setGame(game);
+
+    socket.emit('requestMatchList');
 });
 
 //Interface listeners

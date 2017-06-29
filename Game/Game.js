@@ -2,14 +2,19 @@
  * Created by Josh on 27/06/2017.
  */
 
-var Player = require('./Objects/Player');
+var GameObjects = require('./GameObjects');
+var MapBuilder = require('./Systems/MapBuilder');
 
 (function() {
     function Game() {
+        this.players = [];
+        var mapBuilder = new MapBuilder.MapBuilder();
+        this.map = mapBuilder.constructMap();
     }
 
     Game.prototype = {
-        players: [],
+        players: null,
+        map: null,
 
         syncData: function(data) {
             //Sync the client player
@@ -17,24 +22,31 @@ var Player = require('./Objects/Player');
                 var isNewPlayer = true;
                 this.players.forEach(function(player) {
                    if (data.player.id === player.id) {
-                       player.x = data.player.x;
-                       player.y = data.player.y;
+                       player.syncClientInput(data.player.input);
                        isNewPlayer = false;
                    }
                 });
                 if (isNewPlayer === true) {
-                    this.players.push(new Player.Player(data.player.id, data.player.x, data.player.y));
+                    this.players.push(new GameObjects.Player(data.player.id, data.player.position.x, data.player.position.y));
                 }
             }
         },
 
+        think: function() {
+            this.players.forEach(function(player) {
+                player.think();
+            });
+        },
+
         getData: function() {
             var data = {
-                players: []
+                players: [],
+                map: this.map.getData()
             };
             this.players.forEach(function(player) {
-               data.players.push({id: player.id, x: player.x, y: player.y});
+                data.players.push(player.getClientModel());
             });
+
 
             return data;
         },

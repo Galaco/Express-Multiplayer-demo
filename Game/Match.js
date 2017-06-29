@@ -3,15 +3,17 @@
  */
 
 (function() {
-    function Match(id, name, game) {
+    function Match(id, name) {
         this.id = id;
         this.name = name;
+
+        this.clients = [];
     }
 
     Match.prototype = {
         id: null,
         name: null,
-        clients: [],
+        clients: null,
 
         game: null,
 
@@ -27,23 +29,30 @@
                 //Handle gameplay sync
                 if (ctx.game) {
                     ctx.game.syncData(data);
-                    gameData = ctx.game.getData();
-                }
+                    //Run simulation
+                    ctx.game.think();
 
-                //Sync with clients
-                client.emit('sync', gameData);
-                client.broadcast.to('match_' + this.id).emit('sync', gameData);
+                    //Sync with clients
+                    gameData = ctx.game.getData();
+                    client.emit('sync', gameData);
+                    client.broadcast.to('match_' + this.id).emit('sync', gameData);
+                }
             }, this);
 
             client.on('leaveMatch', function(playerId){
-                ctx.clients.forEach(function(client, index) {
-                    if (client.id === playerId) {
-                        ctx.clients.splice(index, 1);
-                        ctx.game.disconnectPlayer(playerId);
-                        console.log(playerId + ' has left the game');
-                    }
-                });
+                ctx.removeClient(playerId);
             });
+        },
+
+        removeClient: function(playerId) {
+            var l = this.clients.length;
+            while (l--) {
+                if (this.clients[l].id === playerId) {
+                    console.log('Player [' + playerId + '] has left match: [' + this.id + ']');
+                    this.clients.splice(l, 1);
+                    this.game.disconnectPlayer(playerId);
+                }
+            }
         }
     };
 
