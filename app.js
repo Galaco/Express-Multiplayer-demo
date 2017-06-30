@@ -56,10 +56,10 @@ io.on('connection', function(client) {
                 if (matches[l].id === parseInt(data.matchId)) {
                     //Add the player to the match and room
                     client.join('match_' + data.matchId);
-                    matches[l].addClient(client, data.playerId);
+                    var authId = matches[l].addClient(client, data.playerId);
 
                     //Broadcast the successfully joining
-                    client.emit('matchJoined', data.matchId);
+                    client.emit('matchJoined', {matchId: data.matchId, authId: authId});
                     console.log('Player: [' + data.playerId + '] has joined match: [' + data.matchId + ']');
                 }
             }

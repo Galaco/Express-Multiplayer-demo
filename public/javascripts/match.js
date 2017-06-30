@@ -6,8 +6,9 @@ UPDATE_INTERVAL = 1000/30;
 FRAMERATE = 1000/60;
 
 //Main Game object
-Match = function(matchId, socket) {
+Match = function(matchId, authId, socket) {
     this.matchId = matchId;
+    this.authId = authId;
     this.socket = socket;
 
     var ctx = this;
@@ -31,6 +32,7 @@ Match = function(matchId, socket) {
 
 Match.prototype = {
     matchId: null,
+    authId: null,
     socket: null,
 
     game: null,
@@ -55,7 +57,7 @@ Match.prototype = {
 
     sendData: function() {
         if (this.game) {
-            this.socket.emit('sync', this.game.fetchClientData());
+            this.socket.emit('sync', {data: this.game.fetchClientData(), authId: this.authId});
         }
     },
 

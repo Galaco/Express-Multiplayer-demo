@@ -49,18 +49,6 @@ Map.prototype = {
         }
     },
 
-    requestPlayerSpawn: function() {
-        var possibleSpawns = [],
-            l = this.typeGrid.length;
-        while (l--) {
-            if (this.typeGrid[l] === this.MAP_SQUARE_EMPTY) {
-                possibleSpawns.push(l);
-            }
-        }
-        var chosen = possibleSpawns[Math.floor(Math.random() * possibleSpawns.length)];
-        return {x: chosen % this.width, y: Math.floor(chosen / this.width)};
-    },
-
     getData: function() {
         return this.grid;
     }

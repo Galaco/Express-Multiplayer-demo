@@ -25,21 +25,17 @@
 
         /**
          * Sync data that comes from the client
-         * @param {Object} data
+         * @param {Object} gameData
          */
-        syncData: function(data) {
+        syncData: function(gameData) {
+            data = gameData.data;
             //Sync the client player
             if (data.player) {
-                var isNewPlayer = true;
                 this.players.forEach(function(player) {
-                   if (data.player.id === player.id) {
+                   if (gameData.authId === player.authId) {
                        player.syncClientInput(data.player.input);
-                       isNewPlayer = false;
                    }
                 });
-                if (isNewPlayer === true) {
-                    this.players.push(new GameObjects.Player(data.player.id, data.player.position.x, data.player.position.y));
-                }
             }
         },
 
@@ -72,14 +68,21 @@
             return data;
         },
 
+        addPlayer: function(playerId, authId) {
+            var spawn = this.map.requestPlayerSpawn();
+            var player = new GameObjects.Player(playerId, spawn.x*32, spawn.y*32);
+            player.setAuthenticationId(authId);
+            this.players.push(player);
+        },
+
         /**
          * Remove a player from the match.
          *
-         * @param playerId
+         * @param {number} authId
          */
-        disconnectPlayer: function(playerId) {
+        disconnectPlayer: function(authId) {
             this.players.forEach(function(player, index) {
-                if (player.id === playerId) {
+                if (player.authId === authId) {
                     this.players.splice(index, 1);
                 }
             }, this);

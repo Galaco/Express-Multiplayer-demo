@@ -28,6 +28,7 @@ Renderer.prototype = {
 
     renderPlayers: function(players) {
         var l = players.length;
+        console.log(players);
         while(l--) {
             if (players[l].isThisClient) {
                 this._drawImage(this._loadImg('/images/player.png'), players[l].position.x, players[l].position.y);

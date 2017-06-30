@@ -21,11 +21,11 @@ PLAYER_MAX_VELOCITY = 2;
      * @constructor
      */
     function Player(id, x, y) {
+        this.size = {x: 20, y: 20};
         this.id = id;
         this.position = {x: x, y: y};
         this.velocity = {x: 0, y: 0};
         this.input = [];
-        this.size = {x: 20, y: 20};
     }
 
     Player.prototype = {
@@ -34,6 +34,16 @@ PLAYER_MAX_VELOCITY = 2;
         velocity: null,
         input: null,
         size: null,
+        authId: null,
+
+        /**
+         * Set a unique token for the player. This way we cant spoof other players
+         *
+         * @param id
+         */
+        setAuthenticationId: function(id) {
+            this.authId = id;
+        },
 
         /**
          * Sync client input data.

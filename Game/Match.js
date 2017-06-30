@@ -40,7 +40,8 @@
          * @param {string} playerId
          */
         addClient: function(client, playerId) {
-            this.clients.push({client: client, id: playerId});
+            var authId = Math.floor((Math.random() * 1000000) + 1);
+            this.clients.push({client: client, id: playerId, authId: authId});
 
             var ctx = this;
             client.on('sync', function(data) {
@@ -57,23 +58,27 @@
                 }
             }, this);
 
-            client.on('leaveMatch', function(playerId){
-                ctx.removeClient(playerId);
+            this.game.addPlayer(playerId, authId);
+
+            client.on('leaveMatch', function(authId){
+                ctx.removeClient(authId);
             });
+
+            return authId;
         },
 
         /**
          * Remove a client from the game.
          *
-         * @param {string} playerId
+         * @param {string} authId
          */
-        removeClient: function(playerId) {
+        removeClient: function(authId) {
             var l = this.clients.length;
             while (l--) {
-                if (this.clients[l].id === playerId) {
-                    console.log('Player [' + playerId + '] has left match: [' + this.id + ']');
+                if (this.clients[l].authId === authId) {
+                    console.log('Player [' + this.clients[l].id + '] has left match: [' + this.id + ']');
                     this.clients.splice(l, 1);
-                    this.game.disconnectPlayer(playerId);
+                    this.game.disconnectPlayer(authId);
                 }
             }
         }

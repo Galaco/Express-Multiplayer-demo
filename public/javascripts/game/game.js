@@ -38,11 +38,11 @@ Game.prototype = {
     render: function() {
         if (this.renderer) {
             this.renderer.clearContext();
-            if (this.players) {
-                this.renderer.renderPlayers(this.players);
-            }
             if (this.map) {
                 this.renderer.renderMap(this.map.getData());
+            }
+            if (this.players) {
+                this.renderer.renderPlayers(this.players);
             }
         }
     },
@@ -75,7 +75,7 @@ Game.prototype = {
             //Check for new players
             var l = gameData.players.length;
             while (l--) {
-                var isNewPlayer  = true;
+                var isNewPlayer = true;
                 this.players.forEach(function(player) {
                     if (player.id === gameData.players[l].id) {
                         player.syncServerModel(gameData.players[l]);
@@ -83,7 +83,7 @@ Game.prototype = {
                     }
                 }, this);
                 if (isNewPlayer) {
-                    this.players.push(new Player(gameData.players[l].id, false, gameData.players[l].position.x, gameData.players[l].position.y))
+                    this.addPlayer(gameData.players[l].id, gameData.players[l].position.x, gameData.players[l].position.y);
                 }
             }
             //Check for disconnects
@@ -106,14 +106,26 @@ Game.prototype = {
         if (gameData.map) {
             if (!this.map) {
                 this.map = new Map(gameData.map);
-                if (!this.currentPlayer) {
-                    var spawn = this.map.requestPlayerSpawn();
-                    this.currentPlayer = new Player(playerId, true, spawn.x*32, spawn.y*32);
-                }
             } else {
                 this.map.sync(gameData.map);
             }
         }
+    },
+
+    addPlayer: function(id, x, y) {
+        var isLocal = false;
+        if (playerId === id) {
+            isLocal = true;
+        }
+
+        var player = new Player(id, isLocal, x, y);
+        if (isLocal) {
+            this.currentPlayer = player;
+            this.players.push(this.currentPlayer);
+        } else {
+            this.players.push(player);
+        }
+        console.log(this.players);
     }
 };
 

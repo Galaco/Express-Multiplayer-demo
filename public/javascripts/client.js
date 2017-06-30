@@ -4,7 +4,12 @@
 
 var socket = io.connect('localhost:3000');
 
+// Player name
 var playerId = '';
+// Auth id, only the server and the linked player know the id.
+// Prevents spoofing other players without guessing another id.
+var authId = '';
+// Current match
 var match = null;
 
 
@@ -41,10 +46,9 @@ socket.on('requestNewMatch', function(match) {
     playerId = $('#playerId').val();
     if (playerId.length > 0) socket.emit('joinMatch', {matchId: match.id, playerId: playerId});
 });
-socket.on('matchJoined', function(matchId) {
-
-
-    match = new Match(matchId, socket);
+socket.on('matchJoined', function(data) {
+    authId = data.authId;
+    match = new Match(data.matchId, authId, socket);
 
     var game = new Game(playerId);
     game.setRenderer(new Renderer('gameWindow'));
@@ -66,7 +70,7 @@ $('#newMatch').on('click', function(e) {
 
 //Make sure to handle disconnecting
 $(window).on('beforeunload', function(){
-    socket.emit('leaveMatch', playerId);
+    socket.emit('leaveMatch', authId);
 });
 
 $(document).ready(function() {
