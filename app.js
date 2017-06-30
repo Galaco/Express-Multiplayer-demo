@@ -50,7 +50,6 @@ io.on('connection', function(client) {
     //Put the client into the match. The game can handle the relevant events
     client.on('joinMatch', function(data) {
         if(data.matchId && data.playerId) {
-            console.log('Player: [' + data.playerId + '] attempted to join match: [' + data.matchId + ']');
             var l = matches.length;
             //Ensure the match exists
             while (l--) {
@@ -61,6 +60,7 @@ io.on('connection', function(client) {
 
                     //Broadcast the successfully joining
                     client.emit('matchJoined', data.matchId);
+                    console.log('Player: [' + data.playerId + '] has joined match: [' + data.matchId + ']');
                 }
             }
         }

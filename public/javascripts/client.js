@@ -24,7 +24,12 @@ socket.on('requestMatchList', function(data) {
                 playerId = $('#playerId').val();
                 var matchId = $(e.currentTarget).attr('data-match-id');
                 //Join match if name defined
-                if (playerId.length > 0) socket.emit('joinMatch', {matchId: matchId, playerId: playerId});
+                if (playerId.length > 0) {
+                    if (match !== null) {
+                        socket.emit('leaveMatch', playerId);
+                    }
+                    socket.emit('joinMatch', {matchId: matchId, playerId: playerId});
+                }
             });
         }
     } else {
@@ -37,9 +42,6 @@ socket.on('requestNewMatch', function(match) {
     if (playerId.length > 0) socket.emit('joinMatch', {matchId: match.id, playerId: playerId});
 });
 socket.on('matchJoined', function(matchId) {
-    if (match !== null) {
-        socket.emit('leaveMatch', playerId);
-    }
 
 
     match = new Match(matchId, socket);

@@ -86,10 +86,12 @@ Block.prototype = {
 
 PhysicsManager = function() {
     this.mapSize = {x: null, y: null};
+    this.solidTypes = [1,2];
 };
 
 PhysicsManager.prototype = {
     mapSize: null,
+    solidTypes: null,
 
     think: function(map, players) {
         //Size will not change midgame
@@ -101,12 +103,11 @@ PhysicsManager.prototype = {
         var i = players.length;
         while (i--) {
             var index = this._determineGridIndexFromPosition(players[i].position),
-                objectIndexes = this._determineNearbyObjectIndexes(index),
+                objectIndexes = this._determineNearbyObjectIndexes(index, players[i].velocity),
                 j = objectIndexes.length;
 
             while (j--) {
-                if (this._testCollision(players[i], map.grid[objectIndexes[j]])) {
-                    console.log('Collision!');
+                if (this._testCollision(players[i], map.grid[objectIndexes[j]]) === true) {
                     //Need to move the player back again
                     players[i].position.x -= players[i].velocity.x;
                     players[i].position.y -= players[i].velocity.y;
@@ -120,35 +121,52 @@ PhysicsManager.prototype = {
         return x + (this.mapSize.x * Math.floor(position.y / 32));
     },
 
-    _determineNearbyObjectIndexes: function(index) {
-        //Since its aabb and velocity is waaay small we only care about Current + LRUD objects
-        return [
-            index,                  // current
-            index - 1, // left
-            index - this.mapSize.x, //up
-            index + 1, //right
-            index + this.mapSize.x  //down
-        ];
+    _determineNearbyObjectIndexes: function(index, velocity) {
+        var i = [index];
+        //determine direction of motion
+        if (velocity.x !== 0) {
+            if (velocity.x > 0) {
+                i.push(index + 1);
+                //right
+            } else {
+                //left
+                i.push(index - 1);
+            }
+        }
+        if (velocity.y !== 0) {
+            if (velocity.y > 0) {
+                //down
+                i.push(index + this.mapSize.x);
+            } else {
+                //up
+                i.push(index - this.mapSize.x);
+            }
+        }
+        return i;
     },
 
     //Fix me
     _testCollision: function(a, b) {
-        //There is an empty square
-        if (b === null || b === undefined) {
+
+        if (!b) {
             return false;
         }
+
+        if (this.solidTypes.indexOf(b.type) <= -1) {
+            return false;
+        }
+
         //X Axis collision
         var x = (
             a.position.x < b.position.x + b.size.x &&
-            b.position.x > a.position.x + a.size.x
+            b.position.x < a.position.x + a.size.x
         );
         //Y Axis collision
         var y = (
             a.position.y <= b.position.y + b.size.y &&
-            b.position.y >= a.position.y + a.size.y
+            b.position.y <= a.position.y + a.size.y
         );
 
-        //Both axis collision
         return (x && y);
     }
 };

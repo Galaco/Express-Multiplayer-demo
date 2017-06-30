@@ -2,7 +2,7 @@
  * Created by Josh on 26/06/2017.
  */
 
-UPDATE_INTERVAL = 1000/20;
+UPDATE_INTERVAL = 1000/30;
 FRAMERATE = 1000/60;
 
 //Main Game object
@@ -22,6 +22,9 @@ Match = function(matchId, socket) {
     setInterval(function() {
         ctx.tick();
     }, UPDATE_INTERVAL);
+    setInterval(function() {
+        ctx.draw();
+    }, FRAMERATE);
 
     console.log('Joined a match, id: [%s]', this.matchId);
 };
@@ -34,6 +37,12 @@ Match.prototype = {
 
     setGame: function(game) {
         this.game = game;
+    },
+
+    draw: function() {
+        if (this.game) {
+            this.game.render();
+        }
     },
 
     tick: function() {

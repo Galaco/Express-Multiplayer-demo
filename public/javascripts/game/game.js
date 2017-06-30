@@ -124,7 +124,7 @@ Player = function(playerId, isThisClient, x, y) {
     this.isThisClient = isThisClient;
     this.position = {x: x, y: y};
     this.velocity = {x: 0, y: 0};
-    this.size = {x: 32, y: 32};
+    this.size = {x: 20, y: 20};
     this.input = [];
 
     if (isThisClient) {
