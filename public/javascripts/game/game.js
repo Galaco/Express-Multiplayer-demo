@@ -92,13 +92,13 @@ Game.prototype = {
                 var k = gameData.players.length,
                     stillConnected = false;
                 while (k--) {
-                    if (this.players[k].id === gameData.players[k].id) {
+                    if (this.players[l].id === gameData.players[k].id) {
                         stillConnected = true;
                     }
                 }
                 //Player has disconnected
                 if (!stillConnected) {
-                    this.players.splice(index, 1);
+                    this.players.splice(l, 1);
                 }
             }
         }
